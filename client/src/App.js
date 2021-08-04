@@ -100,7 +100,7 @@ const App = () => {
     }, 2000);
 
     axios
-      .post("https://image-0upload.herokuapp.com/upload", formData)
+      .post(`${base_url}upload`, formData)
       .then((res) => {
         console.log(res);
         setResFile(res.data.file);
