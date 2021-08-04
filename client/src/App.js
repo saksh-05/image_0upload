@@ -95,16 +95,17 @@ const App = () => {
     console.log(selectedFile);
 
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-    }, 2000);
-
     axios
       .post(`${base_url}upload`, formData)
       .then((res) => {
         console.log(res);
         setResFile(res.data.file);
-        setPreview(true);
+      setTimeout(() => {
+          if (res.data.file !== undefined) {
+            setLoading(false);
+            setPreview(true);
+          }
+        }, 1000);
       })
       .catch((err) => console.log(err));
     setPreview(false);
