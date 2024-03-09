@@ -6,7 +6,7 @@ let Img = require("../models/img.modal");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "images");
+    cb(null, "./images");
   },
   filename: function (req, file, cb) {
     cb(null, uuidv4() + "-" + Date.now() + path.extname(file.originalname));
@@ -25,27 +25,31 @@ const fileFilter = (req, file, cb) => {
 let upload = multer({ storage, fileFilter });
 
 router.route("/").post(upload.single("myFile"), (req, res) => {
-  const photo = req.file.filename;
-  const file = req.file;
-  console.log(req.file);
+  if (req.file) {
+    const photo = req.file.filename;
+    const file = req.file;
+    console.log(req.file);
 
-  const newImgData = {
-    photo,
-  };
+    const newImgData = {
+      photo,
+    };
 
-  const newImg = new Img(newImgData);
+    const newImg = new Img(newImgData);
 
-  newImg
-    .save()
-    .then(() => res.send({
-      status: true,
-      message: 'file uploaded',
-      file,
-    }))
-    .catch((err) => res.status(400).json("Error: " + err));
-  
-      console.log(file);
-  
+    newImg
+      .save()
+      .then(() =>
+        res.send({
+          status: true,
+          message: "file uploaded",
+          file,
+        })
+      )
+      .catch((err) => res.status(400).send("Eror: " + err));
+    console.log(file);
+  } else {
+    console.log("no file selected");
+  }
 });
 
 module.exports = router;

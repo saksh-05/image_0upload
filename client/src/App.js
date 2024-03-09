@@ -7,7 +7,7 @@ import { ReactComponent as Logo } from "./resources/port.svg";
 import { useDropzone } from "react-dropzone";
 import base_url from "./axios";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   container: {
     justifyContent: "center",
     display: "flex",
@@ -20,6 +20,9 @@ const useStyles = makeStyles(() => ({
     marginTop: "4rem",
     height: "auto",
     width: "auto",
+    [theme.breakpoints.down("md")]: {
+      width: "90%",
+    },
   },
   dropbox: {
     width: "338px",
@@ -28,6 +31,9 @@ const useStyles = makeStyles(() => ({
     border: "1px dashed #97bef4",
     borderRadius: "12px",
     margin: "2rem 4rem",
+    [theme.breakpoints.down("md")]: {
+      margin: "2rem 1rem",
+    },
   },
   p: {
     fontFamily: "Poppins",
@@ -95,16 +101,18 @@ const App = () => {
     console.log(selectedFile);
 
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-    }, 4000);
 
     axios
       .post(`${base_url}upload`, formData)
       .then((res) => {
         console.log(res);
         setResFile(res.data.file);
-        setPreview(true);
+        setTimeout(() => {
+          if (res.data.file !== undefined) {
+            setLoading(false);
+            setPreview(true);
+          }
+        }, 1000);
       })
       .catch((err) => console.log(err));
     setPreview(false);
